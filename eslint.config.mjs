@@ -6,10 +6,10 @@ import astro from "eslint-plugin-astro";
 import prettier from "eslint-plugin-prettier";
 
 const tsParser = tseslint.parser;
-const astroParser = astro.parser;
 
 export default defineConfig([
 	{
+		files: ["src/**"],
 		languageOptions: {
 			globals: {
 				...globals.browser,
@@ -18,10 +18,29 @@ export default defineConfig([
 		},
 	},
 
-	js.configs.recommended,
-	tseslint.configs.recommended,
+	{
+		files: ["src/**"],
+		rules: {
+			...js.configs.recommended.rules,
+		},
+	},
 
 	{
+		files: ["src/**"],
+		languageOptions: {
+			parser: tsParser,
+			sourceType: "module",
+		},
+		plugins: {
+			"@typescript-eslint": tseslint.plugin,
+		},
+		rules: {
+			...tseslint.configs.recommended[2].rules,
+		},
+	},
+
+	{
+		files: ["src/**"],
 		plugins: {
 			prettier: prettier,
 		},
@@ -30,28 +49,36 @@ export default defineConfig([
 		},
 	},
 
-	astro.configs.recommended,
-	astro.configs["jsx-a11y-recommended"],
+	...astro.configs["flat/base"].map((config) => {
+		if (!config.files) return config;
+		return {
+			...config,
+			files: config.files.map((pattern) => {
+				if (pattern.startsWith("**/")) {
+					return `src/**/${pattern.slice(3)}`;
+				}
+				if (pattern.startsWith("*.")) {
+					return `src/*.${pattern.slice(2)}`;
+				}
+				return pattern;
+			}),
+		};
+	}),
 
 	{
-		files: ["**/*.astro"],
-		languageOptions: {
-			parser: astroParser,
-			parserOptions: {
-				parser: tsParser,
-				extraFileExtensions: [".astro"],
-				sourceType: "module",
-				ecmaVersion: "latest",
-				project: "./tsconfig.json",
-			},
-		},
+		files: ["src/**/*.astro"],
 		rules: {
-			"no-undef": "off",
-			"@typescript-eslint/no-explicit-any": "off",
+			...astro.configs.recommended.rules,
+		},
+	},
+	{
+		files: ["src/**/*.astro"],
+		rules: {
+			...astro.configs["jsx-a11y-recommended"].rules,
 		},
 	},
 
 	{
-		ignores: ["dist/**", "**/*.d.ts", ".github/"],
+		ignores: ["dist/**", "**/*.d.ts", ".github/", ".agents/**"],
 	},
 ]);
