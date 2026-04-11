@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: Dd2soAPzloDV6njL
+      POSTGRES_PASSWORD: E1php27vVZ7x2wGpk1MlwA
+      POSTGRES_DB: 4GV9eyCr-3o
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
