@@ -1,86 +1,36 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { ProductCard } from "@/components/ui/product-card";
+import type { StockStatus } from "@/components/ui/product-card";
+import { localClient } from "@/lib/api-client";
+import type { ProductsResponse } from "@/lib/types/product";
 
-const products = [
-	{
-		id: 1,
-		name: "Kemeja Flanel Premium Kotak Merah",
-		description:
-			"Kemeja flanel dengan bahan katun premium, nyaman dipakai sepanjang hari. Cocok untuk gaya kasual sehari-hari.",
-		price: 289000,
-		originalPrice: 350000,
-		image: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&h=600&fit=crop",
-		stock: "in_stock" as const,
-	},
-	{
-		id: 2,
-		name: "Celana Jeans Slim Fit Pria",
-		description:
-			"Celana jeans dengan potongan slim fit yangmodern. Dilengkapi saku serbaguna dan resleting YKK berkualitas.",
-		price: 420000,
-		image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=600&fit=crop",
-		stock: "low_stock" as const,
-		stockCount: 3,
-	},
-	{
-		id: 3,
-		name: "Sneakers Running Ultra Ringan",
-		description:
-			"Sepatu runner dengan teknologi peredam syock dan upper breathable. Dirancang untuk kenyamanan maksimal.",
-		price: 890000,
-		originalPrice: 1200000,
-		image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop",
-		stock: "in_stock" as const,
-	},
-	{
-		id: 4,
-		name: "Tas Ransel Laptop Anti Air",
-		description:
-			"Ransel multifungsi dengan kompartemen laptop hingga 15.6 inci. Material anti air melindungi barang Anda.",
-		price: 550000,
-		image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&h=600&fit=crop",
-		stock: "out_of_stock" as const,
-	},
-	{
-		id: 5,
-		name: "Jam Tangan Minimalis Kulit",
-		description:
-			"Jam tangan dengan strap kulit genuine dan movement quartz akurat. Desain klasik yang cocok untuk segala acara.",
-		price: 675000,
-		originalPrice: 800000,
-		image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&h=600&fit=crop",
-		stock: "in_stock" as const,
-	},
-	{
-		id: 6,
-		name: "Topi Bucket Unisex Hitam",
-		description:
-			"Topi bucket dengan bahan kanvas tahan lama._ONE SIZE_ yang cocok untuk sebagian besar ukuran kepala.",
-		price: 125000,
-		image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&h=600&fit=crop",
-		stock: "in_stock" as const,
-	},
-	{
-		id: 7,
-		name: "Sandal Slide Pria Kulit",
-		description:
-			"Sandal slide dengan upper kulit asli dan sol EVA empuk. Ideal untuk suasana santai di rumah atau pantai.",
-		price: 350000,
-		image: "https://images.unsplash.com/photo-1603487742131-4160ec999306?w=600&h=600&fit=crop",
-		stock: "low_stock" as const,
-		stockCount: 5,
-	},
-	{
-		id: 8,
-		name: "Kacamata Blue Light Blocking",
-		description:
-			"Kacamata dengan lensa blue light filter untuk melindungi mata dari paparan layar. Frame ringan titanium.",
-		price: 450000,
-		image: "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=600&h=600&fit=crop",
-		stock: "in_stock" as const,
-	},
-];
+const response = await localClient
+	.get<ProductsResponse>("products", {
+		searchParams: { page: "1", pageSize: "8", sortBy: "createdAt", sortOrder: "desc" },
+	})
+	.json();
+
+const products = response.data.map((product) => {
+	const primaryImage =
+		product.images[0]?.media.url ??
+		"https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=600&h=600&fit=crop";
+	const primaryVariant = product.variants[0];
+	const stock = primaryVariant?.stock ?? 0;
+	const stockStatus: StockStatus =
+		stock === 0 ? "out_of_stock" : stock <= 5 ? "low_stock" : "in_stock";
+
+	return {
+		id: product.id,
+		name: product.name,
+		description: product.description,
+		price: primaryVariant?.price ?? 0,
+		image: primaryImage,
+		stock: stockStatus,
+		stockCount: stock,
+		slug: product.slug,
+	};
+});
 ---
 
 <Layout title="BearUang — Template Toko Online">
@@ -139,10 +89,9 @@ const products = [
 										productName={product.name}
 										description={product.description}
 										price={product.price}
-										originalPrice={product.originalPrice}
 										stock={product.stock}
 										stockCount={product.stockCount}
-										href={`/product/${product.id}`}
+										href={`/product/${product.slug}`}
 										onAddToCart={() => console.log("Add to cart:", product.id)}
 										onWishlist={() => console.log("Wishlist:", product.id)}
 									/>
