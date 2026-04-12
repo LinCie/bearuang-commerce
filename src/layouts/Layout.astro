@@ -1,0 +1,50 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	hideNav?: boolean;
+}
+
+const { title, hideNav = false } = Astro.props;
+---
+
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body class="min-h-screen bg-background font-sans antialiased">
+		<div class="relative flex min-h-screen flex-col">
+			{
+				!hideNav && (
+					<header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+						<div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+							<a href="/" class="text-sm font-semibold tracking-tight">
+								BearUang
+							</a>
+							<nav class="flex items-center gap-6 text-sm">
+								<a
+									href="/signin"
+									class="text-muted-foreground transition-colors hover:text-foreground"
+								>
+									Masuk
+								</a>
+								<a href="/signup" class="font-medium text-foreground">
+									Daftar
+								</a>
+							</nav>
+						</div>
+					</header>
+				)
+			}
+
+			<main class="flex flex-1 flex-col items-center">
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>
