@@ -9,12 +9,15 @@
 
 ## Commands
 
+**Always use `bun` — never npm, yarn, pnpm, or deno.**
+
 ```bash
-bun dev        # start dev server (localhost:4321)
-bun build      # production build
-bun lint       # eslint
-bun format     # prettier write
-bun format:check  # prettier check
+bun dev          # start dev server (localhost:4321)
+bun build        # production build
+bun lint         # eslint
+bun format       # prettier write
+bun format:check # prettier check
+bun check        # TypeScript type check (run after any update)
 ```
 
 ## Key Files
