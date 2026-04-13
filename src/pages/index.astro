@@ -91,7 +91,7 @@ const products = response.data.map((product) => {
 										price={product.price}
 										stock={product.stock}
 										stockCount={product.stockCount}
-										href={`/product/${product.slug}`}
+										href={`/products/${product.slug}`}
 										onAddToCart={() => console.log("Add to cart:", product.id)}
 										onWishlist={() => console.log("Wishlist:", product.id)}
 									/>

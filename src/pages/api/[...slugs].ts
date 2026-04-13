@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { apiClient } from "@/lib/api-client";
-import type { ProductsResponse } from "@/lib/types/product";
+import type { Product, ProductsResponse } from "@/lib/types/product";
 import type { APIRoute } from "astro";
 
 const app = new Hono().basePath("/api");
@@ -22,6 +22,13 @@ app.get("/products", async (c) => {
 	if (categoryId) searchParams.categoryId = categoryId;
 
 	const response = await apiClient.get<ProductsResponse>("products", { searchParams }).json();
+
+	return c.json(response);
+});
+
+app.get("/products/:slug", async (c) => {
+	const slug = c.req.param("slug");
+	const response = await apiClient.get<Product>(`products/slug/${slug}`).json();
 
 	return c.json(response);
 });
