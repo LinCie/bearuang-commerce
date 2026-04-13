@@ -3,6 +3,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
 
@@ -144,9 +145,10 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
 
 				<CardContent className="flex flex-1 flex-col gap-0 p-4">
 					{description && (
-						<p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-							{description}
-						</p>
+						<MarkdownRenderer
+							content={description}
+							className="line-clamp-3 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:text-muted-foreground"
+						/>
 					)}
 
 					<div className="mt-auto flex flex-col gap-2">

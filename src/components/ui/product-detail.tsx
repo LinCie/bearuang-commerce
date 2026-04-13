@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -562,9 +563,10 @@ export function ProductDetail({ product, onAddToCart, onQuantityChange }: Produc
 						<TabsTrigger value="specifications">Spesifikasi</TabsTrigger>
 					</TabsList>
 					<TabsContent value="description" className="mt-4">
-						<div className="prose prose-sm max-w-none text-muted-foreground">
-							<p>{product.description || "Tidak ada deskripsi produk."}</p>
-						</div>
+						<MarkdownRenderer
+							content={product.description || "Tidak ada deskripsi produk."}
+							className="text-muted-foreground"
+						/>
 					</TabsContent>
 					<TabsContent value="specifications" className="mt-4">
 						<Accordion type="single" collapsible defaultValue="product-info">
