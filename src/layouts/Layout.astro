@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Toaster } from "@/components/ui/sonner";
 
 interface Props {
 	title: string;
@@ -28,6 +29,12 @@ const { title, hideNav = false } = Astro.props;
 							</a>
 							<nav class="flex items-center gap-6 text-sm">
 								<a
+									href="/cart"
+									class="text-muted-foreground transition-colors hover:text-foreground"
+								>
+									Keranjang
+								</a>
+								<a
 									href="/signin"
 									class="text-muted-foreground transition-colors hover:text-foreground"
 								>
@@ -46,5 +53,6 @@ const { title, hideNav = false } = Astro.props;
 				<slot />
 			</main>
 		</div>
+		<Toaster client:load />
 	</body>
 </html>
